@@ -1,34 +1,34 @@
-import {PrismaClient} from "@prisma/client";
+import { AccountForm } from './account-form'
 
-import {AccountForm} from "./account-form";
+import prisma from '@/lib/prisma'
+import { getProducts } from '@/actions/products-actions'
 
-const prisma = new PrismaClient();
-
-export default async function CustomerDetailsPage({params}: {params: {id: string}}) {
-  const customerId = parseInt(params.id, 10);
+export default async function CustomerDetailsPage({ params }: { params: { id: string } }) {
+  const customerId = parseInt(params.id, 10)
 
   // Fetch customer and products
   const customer = await prisma.customer.findUnique({
-    where: {id: customerId},
-  });
+    where: { id: customerId },
+  })
 
-  const products = await prisma.product.findMany();
+  const products = await getProducts()
 
   if (!customer) {
-    return <div>Customer not found</div>;
+    return <div>Customer not found</div>
   }
 
   // Serialize Decimal to plain objects
   const serializedProducts = products.map((product) => ({
-    ...product,
-    price: product.price.toString(), // Convert Decimal to string
-  }));
+    id: product.id,
+    name: product.name,
+    price: product.price.toString(), // Convert number to string
+  }))
 
   return (
     <div>
-      <h1>{customer.name} Details</h1>
+      <h1>{customer.name}</h1>
       {/* Pass serialized products to the client component */}
-      <AccountForm customer={customer} products={serializedProducts} />
+      <AccountForm customerId={customer.id} products={serializedProducts} />
     </div>
-  );
+  )
 }

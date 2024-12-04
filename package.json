@@ -13,9 +13,11 @@
     "@opentelemetry/api-logs": "^0.52.1",
     "@prisma/client": "5.22.0",
     "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
+    "@tanstack/react-table": "^8.20.5",
     "@vercel/otel": "^1.9.2",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
@@ -23,6 +25,7 @@
     "lucide-react": "^0.428.0",
     "next": "15.0.3",
     "postcss": "^8.4.41",
+    "prisma": "^5.22.0",
     "react": "19.0.0-rc-5c56b873-20241107",
     "react-dom": "19.0.0-rc-5c56b873-20241107",
     "react-hook-form": "^7.53.2",
@@ -49,7 +52,6 @@
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
-    "prisma": "^5.22.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.1.0"
   }

@@ -1,7 +1,7 @@
-import {Customer} from "@prisma/client";
-import Link from "next/link";
+import { Customer } from '@prisma/client'
+import Link from 'next/link'
 
-import {Button, buttonVariants} from "@/components/ui/button";
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -9,75 +9,81 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {createCustomer, updateCustomer} from "@/actions/customers-actions";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { createCustomer, updateCustomer } from '@/actions/customers-actions'
 
-export function CustomerForm({customer}: {customer?: Customer}) {
-  const functionAction = customer?.id ? updateCustomer : createCustomer;
+export function CustomerForm({ customer }: { customer?: Customer }) {
+  const functionAction = customer?.id ? updateCustomer : createCustomer
 
   return (
     <form action={functionAction}>
-      <Link className="text-sm underline opacity-70" href="/">
-        ← Volver a Clientes
+      <Link
+        className="text-sm underline opacity-70"
+        href={customer?.id ? `/customers/${customer.id}` : '/'}
+      >
+        {customer?.id ? '← Volver a Cliente' : '← Volver a Clientes'}
       </Link>
 
       <input name="id" type="hidden" value={customer?.id} />
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Create Customer</CardTitle>
-          <CardDescription>Fill out the form below to create a new customer.</CardDescription>
+          <CardTitle>{customer?.id ? 'Editar cliente' : 'Nuevo cliente'}</CardTitle>
+          <CardDescription>
+            {customer?.id
+              ? 'Actualice los datos del cliente.'
+              : 'Complete el formulario a continuación para crear un nuevo cliente.'}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Nombre</Label>
               <Input
                 defaultValue={customer?.name}
                 id="name"
                 name="name"
-                placeholder="Name of your customer"
+                placeholder="Nombre del cliente"
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Telefono</Label>
               <Input
-                defaultValue={customer?.phone}
+                defaultValue={customer?.phone ?? ''}
                 id="phone"
                 name="phone"
-                placeholder="Phone number of your customer"
+                placeholder="Telefono del cliente"
                 type="number"
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">Direccion</Label>
               <Input
-                defaultValue={customer?.address}
+                defaultValue={customer?.address ?? ''}
                 id="address"
                 name="address"
-                placeholder="Address of your customer"
+                placeholder="Direccion del cliente"
               />
               <div />
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="dni">DNi</Label>
+                <Label htmlFor="dni">Documento (DNI)</Label>
                 <Input
-                  defaultValue={customer?.dni}
+                  defaultValue={customer?.dni ?? ''}
                   id="dni"
                   name="dni"
-                  placeholder="Dni of your customer"
+                  placeholder="Dni del cliente"
                 />
               </div>
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Link className={buttonVariants({variant: "secondary"})} href="/">
-            Cancel
-          </Link>
-          <Button type="submit">{customer?.id ? "Update Customer" : "Create Customer"}</Button>
+          <Button type="submit">
+            {customer?.id ? 'Actualizar cliente' : 'Crear nuevo cliente'}
+          </Button>
         </CardFooter>
       </Card>
     </form>
-  );
+  )
 }

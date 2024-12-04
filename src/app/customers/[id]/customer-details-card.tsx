@@ -1,14 +1,16 @@
-import {CreditCard, IdCard, MapPinHouse, Phone, User} from "lucide-react";
-import Link from "next/link";
+import { CreditCard, IdCard, MapPinHouse, Phone, Printer, User } from 'lucide-react'
+import Link from 'next/link'
 
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {CustomerWithAccounts} from "@/lib/actions/types";
-import {Separator} from "@/components/ui/separator";
-import {Badge} from "@/components/ui/badge";
-import {deleteCustomer} from "@/actions/customers-actions";
+// import { AccountButtonDelete } from './account-button-delete'
+import { formatDate } from '@/lib/helper'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+// import { deleteCustomer } from '@/actions/customers-actions'
+import { CustomerWithAccounts } from '@/lib/actions/types'
 
-export function CustomerDetailsCard({customer}: {customer: CustomerWithAccounts}) {
+export function CustomerDetailsCard({ customer }: { customer: CustomerWithAccounts }) {
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4">
       <div className="flex items-center justify-between">
@@ -20,13 +22,17 @@ export function CustomerDetailsCard({customer}: {customer: CustomerWithAccounts}
 
       <Card>
         <CardHeader>
-          <div className="flex items-center space-x-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <User className="h-6 w-6" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <User className="h-6 w-6" />
+              </div>
+              <div>
+                <CardTitle>{customer.name}</CardTitle>
+              </div>
             </div>
             <div>
-              <CardTitle>{customer.name}</CardTitle>
-              <CardDescription>ID: {customer.id}</CardDescription>
+              <Printer className="h-6 w-6 text-muted-foreground hover:cursor-pointer" />
             </div>
           </div>
         </CardHeader>
@@ -59,27 +65,32 @@ export function CustomerDetailsCard({customer}: {customer: CustomerWithAccounts}
 
           {/* Accounts Section */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Cuentas</h3>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Cuentas</h3>
+              <Link href={`/customers/${customer.id}/accounts`}>Ver todas</Link>
+            </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {customer.accounts?.map((account) => (
-                <Card key={account.id}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">
-                          {account.createdDate
-                            ? new Date(account.createdDate).toLocaleDateString()
-                            : "Fecha no válida"}
-                        </span>
-                      </div>
-                      <Badge className="uppercase" variant="default">
-                        {account.state}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              {customer.accounts
+                ?.sort((a, b) => b.createdDate.getTime() - a.createdDate.getTime())
+                .slice(0, 3)
+                .map((account) => (
+                  <Card key={account.id}>
+                    <Link href={`/accounts/${account.id}`}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="font-medium">{formatDate(account.createdDate)}</span>
+                          </div>
+                          <Badge className="uppercase" variant="default">
+                            {account.state === 'pending' ? 'pendiente' : 'pagado'}
+                          </Badge>
+                          {/* <AccountButtonDelete accountId={account.id} /> */}
+                        </div>
+                      </CardContent>
+                    </Link>
+                  </Card>
+                ))}
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -101,22 +112,12 @@ export function CustomerDetailsCard({customer}: {customer: CustomerWithAccounts}
             <Button className="font-bold" variant="outline">
               <Link href={`/customers/${customer.id}/edit`}>Editar Cliente</Link>
             </Button>
-            <Button
-              className="font-bold"
-              variant="destructive"
-              // onClick={() => {
-              // deleteCustomer(customer.id);
-              // toast({
-              //   title: "Cliente eliminado",
-              //   description: `El cliente ${customer.name} ha sido eliminado`,
-              // });
-              // }}
-            >
-              Borrar Cliente
+            <Button className="font-bold" variant="destructive">
+              <Link href={`/customers/${customer.id}/delete`}>Eliminar Cliente</Link>
             </Button>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

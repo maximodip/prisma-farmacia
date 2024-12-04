@@ -1,24 +1,21 @@
-import Link from "next/link";
+import Link from 'next/link'
 
-import {getProducts} from "@/actions/products-actions";
+import { ProductsDataTable } from './product-table'
+
+import { getProducts } from '@/actions/products-actions'
 
 export default async function HomePage() {
-  const response = await getProducts();
-
-  const products = response.data;
+  const products = await getProducts()
 
   return (
     <>
-      <Link href="/products/new">Crear nuevo</Link>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
-          <Link key={product.id} href={`/products/${product.id}`}>
-            <h2 className="font-bold">{product.name}</h2>
-            <p className="mt-2 text-sm">{product.price.toString()}</p>
-            <p className="mt-2 text-sm">{product.distributor}</p>
-          </Link>
-        ))}
+      <div className="mb-4 flex items-center justify-between gap-x-12 max-md:flex-wrap">
+        <h2 className="text-2xl font-bold tracking-tight">Productos</h2>
+        <Link className="text-sm underline opacity-70" href="/products/new">
+          Agregar producto
+        </Link>
       </div>
+      <ProductsDataTable products={products} />
     </>
-  );
+  )
 }
