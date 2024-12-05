@@ -33,7 +33,7 @@ export default async function AccountPage({ params }: { params: { id: string } }
         </div>
         <div className="flex justify-between">
           <span className="font-semibold">Estado:</span>
-          <span>{account.state === 'paid' ? 'pagado' : 'pendiente'}</span>
+          <span className="uppercase">{account.state === 'paid' ? 'pagado' : 'pendiente'}</span>
         </div>
         <Separator />
         <div className="space-y-2">
@@ -42,31 +42,29 @@ export default async function AccountPage({ params }: { params: { id: string } }
               <span>
                 {item.product.name} (x{item.quantity})
               </span>
-              <span>{item.priceAtPurchase}</span>
+              <span>${item.priceAtPurchase}</span>
             </div>
           ))}
         </div>
         <Separator />
         <div className="flex justify-between font-bold">
-          <span>Total:</span>
+          <span>Subtotal:</span>
           <span>
-            {account.items.reduce((acc, item) => acc + item.priceAtPurchase * item.quantity, 0)}
+            ${account.items.reduce((acc, item) => acc + item.priceAtPurchase * item.quantity, 0)}
           </span>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <div className="flex gap-2">
-          <UpdateAccountStateButton accountId={account.id} accountState={account.state} />
-          <form action={removeAccount}>
-            <input name="accountId" type="hidden" value={account.id} />
-            <Button type="submit" variant="destructive">
-              Eliminar
-            </Button>
-          </form>
-        </div>
-        <div className="text-sm text-muted-foreground">
+        <UpdateAccountStateButton accountId={account.id} accountState={account.state} />
+        <form action={removeAccount}>
+          <input name="accountId" type="hidden" value={account.id} />
+          <Button type="submit" variant="destructive">
+            Eliminar
+          </Button>
+        </form>
+        {/* <div className="text-sm text-muted-foreground">
           <span>Creado el: {account.createdAt.toLocaleDateString('es-ES')}</span>
-        </div>
+        </div> */}
       </CardFooter>
     </Card>
   )

@@ -1,18 +1,6 @@
 'use client'
-
 import { useState } from 'react'
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
 import Link from 'next/link'
-import { Pencil, Trash } from 'lucide-react'
 
 import {
   Table,
@@ -22,142 +10,111 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Product } from '@/lib/actions/types'
-
-// Define columns outside the component
-const columns: ColumnDef<Product>[] = [
-  {
-    accessorKey: 'id',
-    header: 'Id',
-  },
-  {
-    accessorKey: 'name',
-    header: 'Nombre',
-    cell: ({ row }) => <span className="font-semibold">{row.getValue('name')}</span>,
-  },
-  {
-    accessorKey: 'distributor',
-    header: 'Laboratorio',
-  },
-  {
-    accessorKey: 'price',
-    header: 'Precio',
-    cell: ({ row }) => `$${row.getValue('price')}`,
-  },
-  {
-    id: 'actions',
-    header: () => <div className="text-right">Acciones</div>,
-    cell: ({ row }) => (
-      <div className="flex justify-end gap-x-2">
-        <Link
-          className="rounded bg-sky-600 p-2 transition-colors hover:bg-sky-700"
-          href={`/productos/${row.original.id}`}
-        >
-          <Pencil className="h-4 w-4" color="white" />
-        </Link>
-        <Button className="h-8 w-8" size="icon" variant="destructive">
-          <Trash className="h-4 w-4" />
-        </Button>
-      </div>
-    ),
-  },
-]
+import { Button } from '@/components/ui/button'
+import { deleteProduct } from '@/actions/products-actions'
+import { Input } from '@/components/ui/input'
 
 export function ProductsDataTable({ products }: { products: Product[] }) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [distributorFilter, setDistributorFilter] = useState<string>('')
+  // State for products and filter
+  const [selectedDistributor, setSelectedDistributor] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
-  // Get unique distributors for filter
-  const distributors = Array.from(new Set(products.map((p) => p.distributor ?? ''))).filter(Boolean)
+  // Get unique distributors (including null)
+  const uniqueDistributors = [...new Set(products.map((p) => p.distributor))]
 
-  const table = useReactTable({
-    data: products,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      columnFilters,
-    },
-    onColumnFiltersChange: setColumnFilters,
+  // Filter products based on selected distributor
+  const filteredProducts = products.filter((product) => {
+    // Distributor filter
+    const matchesDistributor =
+      selectedDistributor === null ||
+      (selectedDistributor === 'null' && product.distributor === null) ||
+      product.distributor === selectedDistributor
+
+    // Name search filter (case-insensitive)
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+    return matchesDistributor && matchesSearch
   })
 
-  // Handle text input filter
-  const handleDistributorFilterChange = (value: string) => {
-    setDistributorFilter(value)
-    table.getColumn('distributor')?.setFilterValue(value)
-  }
-
-  // Handle quick filter button
-  const handleQuickFilter = (distributor: string) => {
-    setDistributorFilter(distributor)
-    table.getColumn('distributor')?.setFilterValue(distributor)
-  }
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center py-4">
-        <Input
-          className="max-w-sm"
-          placeholder="Filtrar por laboratorio..."
-          value={distributorFilter}
-          onChange={(event) => handleDistributorFilterChange(event.target.value)}
-        />
-
-        {/* Distributor quick filter buttons */}
-        <div className="ml-4 flex gap-2">
-          {distributors.map((distributor) => (
-            <Button
-              key={distributor}
-              variant={distributorFilter === distributor ? 'default' : 'outline'}
-              onClick={() => handleQuickFilter(distributor)}
-            >
-              {distributor}
-            </Button>
-          ))}
-          <Button
-            variant={distributorFilter === '' ? 'default' : 'outline'}
-            onClick={() => handleQuickFilter('')}
+    <div className="w-full">
+      {/* Distributor Filter */}
+      <div className="mb-4 flex items-center gap-x-2">
+        <div className="flex items-center gap-x-2">
+          <h3 className="text-sm font-medium">Distribuidor</h3>
+          <Select
+            value={selectedDistributor ?? 'all'}
+            onValueChange={(value) => setSelectedDistributor(value === 'all' ? null : value)}
           >
-            Todos
-          </Button>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Distributor" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              {uniqueDistributors
+                .filter((dist) => dist !== null)
+                .map((distributor) => (
+                  <SelectItem key={distributor} value={distributor || ''}>
+                    {distributor}
+                  </SelectItem>
+                ))}
+              <SelectItem value="null">Sin Distribuidor</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+        <Input
+          className="w-[250px]"
+          placeholder="Buscar productos..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
+      {/* Product Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Precio</TableHead>
+              <TableHead>Distribuidor</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-24 text-center" colSpan={columns.length}>
-                  No hay productos.
+            {filteredProducts.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell className="font-extralight">{product.id}</TableCell>
+                <TableCell className="font-medium">{product.name}</TableCell>
+                <TableCell className="font-medium">${product.price.toFixed(2)}</TableCell>
+                <TableCell>{product.distributor ?? 'No Distributor'}</TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-end gap-x-2">
+                    <Link
+                      className="rounded bg-sky-600 p-2 font-semibold text-white transition-colors hover:bg-sky-700"
+                      href={`/products/${product.id}`}
+                    >
+                      Editar
+                    </Link>
+                    <form action={deleteProduct}>
+                      <input name="productId" type="hidden" value={product.id} />
+                      <Button className="h-9 font-semibold" type="submit" variant="destructive">
+                        Eliminar
+                      </Button>
+                    </form>
+                  </div>
                 </TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>

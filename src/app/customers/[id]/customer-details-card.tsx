@@ -1,14 +1,14 @@
 import { CreditCard, IdCard, MapPinHouse, Phone, Printer, User } from 'lucide-react'
 import Link from 'next/link'
 
-// import { AccountButtonDelete } from './account-button-delete'
 import { formatDate } from '@/lib/helper'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-// import { deleteCustomer } from '@/actions/customers-actions'
+import { deleteCustomer } from '@/actions/customers-actions'
 import { CustomerWithAccounts } from '@/lib/actions/types'
+import { DeleteCustomerButton } from '@/components/DeleteCustomerButton'
 
 export function CustomerDetailsCard({ customer }: { customer: CustomerWithAccounts }) {
   return (
@@ -108,13 +108,11 @@ export function CustomerDetailsCard({ customer }: { customer: CustomerWithAccoun
           <Separator />
 
           {/* Actions */}
-          <div className="flex justify-between space-x-4">
+          <div className="flex flex-wrap justify-between space-x-4">
             <Button className="font-bold" variant="outline">
               <Link href={`/customers/${customer.id}/edit`}>Editar Cliente</Link>
             </Button>
-            <Button className="font-bold" variant="destructive">
-              <Link href={`/customers/${customer.id}/delete`}>Eliminar Cliente</Link>
-            </Button>
+            <DeleteCustomerButton customerId={customer.id} />
           </div>
         </CardContent>
       </Card>

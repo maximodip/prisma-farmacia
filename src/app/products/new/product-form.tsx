@@ -1,4 +1,4 @@
-import {Product} from "@prisma/client";
+import { Product } from '@prisma/client'
 
 import {
   Card,
@@ -7,19 +7,26 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Button} from "@/components/ui/button";
-import {createProduct} from "@/actions/products-actions";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { createProduct, updateProduct } from '@/actions/products-actions'
 
-export function ProductForm({product}: {product?: Product}) {
+export function ProductForm({ product }: { product?: Product }) {
+  const functionAction = product?.id ? updateProduct : createProduct
+
   return (
-    <form action={createProduct}>
+    <form action={functionAction}>
+      <input name="id" type="hidden" value={product?.id} />
       <Card className="mx-auto w-full max-w-md">
         <CardHeader>
-          <CardTitle>Agregar Nuevo Producto</CardTitle>
-          <CardDescription>Ingrese los detalles del nuevo producto</CardDescription>
+          <CardTitle>{product?.id ? 'Editar producto' : 'Agregar Nuevo Producto'}</CardTitle>
+          <CardDescription>
+            {product?.id
+              ? 'Actualice los datos del producto.'
+              : 'Complete el formulario a continuación para crear un nuevo producto.'}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -28,6 +35,7 @@ export function ProductForm({product}: {product?: Product}) {
             </Label>
             <Input
               required
+              defaultValue={product?.name}
               id="name"
               name="name"
               placeholder="Ingrese el nombre del producto"
@@ -40,6 +48,7 @@ export function ProductForm({product}: {product?: Product}) {
             </Label>
             <Input
               required
+              defaultValue={product?.price}
               id="price"
               name="price"
               placeholder="Ingrese el precio del producto"
@@ -52,6 +61,7 @@ export function ProductForm({product}: {product?: Product}) {
             </Label>
             <Input
               required
+              defaultValue={product?.distributor}
               id="laboratory"
               name="distributor"
               placeholder="Ingrese el nombre del laboratorio"
@@ -61,10 +71,10 @@ export function ProductForm({product}: {product?: Product}) {
         </CardContent>
         <CardFooter>
           <Button className="w-full" type="submit">
-            Agregar Producto
+            {product?.id ? 'Actualizar' : 'Agregar'}
           </Button>
         </CardFooter>
       </Card>
     </form>
-  );
+  )
 }

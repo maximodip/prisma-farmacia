@@ -92,7 +92,7 @@ export async function updateCustomer(formData: FormData) {
   })
 
   revalidatePath(`/customers/${id}`) // Revalidate the cache for this customer
-  redirect('/')
+  redirect(`/customers/${id}`)
 }
 
 // Get a single customer by ID
@@ -145,16 +145,20 @@ export async function getCustomerById(
 }
 
 // Delete a customer by ID
-export async function deleteCustomer(id: number) {
-  try {
-    await prisma.customer.delete({
-      where: { id },
-    })
+export async function deleteCustomer(formData: FormData) {
+  'use server'
 
-    revalidatePath('/') // Revalidate the cache for the customers list
-    redirect('/')
-  } catch (error) {
-    console.error('Error deleting customer:', error)
-    throw new Error('Error deleting customer')
+  const customerId = parseInt(formData.get('id')?.toString() || '0')
+
+  if (!customerId) {
+    return { success: false, error: 'Invalid ID' }
   }
+
+  await prisma.customer.delete({
+    where: { id: customerId },
+  })
+
+  revalidatePath('/')
+
+  return { success: true }
 }
