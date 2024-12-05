@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Printer } from 'lucide-react'
 import Link from 'next/link'
 
 import { UpdateAccountStateButton } from './updatestate-account-button'
@@ -16,13 +16,18 @@ export default async function AccountPage({ params }: { params: { id: string } }
 
   return (
     <Card className="mx-auto w-full max-w-md">
-      <Link
-        className="flex items-center gap-2 p-2 underline opacity-50 hover:opacity-100"
-        href={`/customers/${account.customerId}/accounts`}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        <span>Cuentas de {account.customer.name}</span>
-      </Link>
+      <div className="flex items-center justify-between p-4">
+        <Link
+          className="flex items-center gap-2 underline opacity-50 hover:opacity-100"
+          href={`/customers/${account.customerId}/accounts`}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Cuentas de {account.customer.name}</span>
+        </Link>
+        <div>
+          <Printer className="h-6 w-6 text-muted-foreground hover:cursor-pointer" />
+        </div>
+      </div>
       <CardHeader>
         <CardTitle className="text-center text-2xl font-bold">Cuenta</CardTitle>
       </CardHeader>

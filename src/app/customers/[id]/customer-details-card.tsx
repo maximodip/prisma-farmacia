@@ -31,9 +31,6 @@ export function CustomerDetailsCard({ customer }: { customer: CustomerWithAccoun
                 <CardTitle>{customer.name}</CardTitle>
               </div>
             </div>
-            <div>
-              <Printer className="h-6 w-6 text-muted-foreground hover:cursor-pointer" />
-            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
