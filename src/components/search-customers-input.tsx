@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
-import { Input } from '@/components/ui/input'
+import { SearchInput } from './ui/search-inpu'
+
 import { CustomerWithAccounts } from '@/lib/actions/types'
 
 export function SearchCustomersInput({ customers }: { customers: CustomerWithAccounts[] }) {
@@ -31,9 +32,9 @@ export function SearchCustomersInput({ customers }: { customers: CustomerWithAcc
   }
 
   return (
-    <Input
-      className="w-full"
-      placeholder="Search customers by name or email..."
+    <SearchInput
+      className="mt-4 w-full"
+      placeholder="Buscar clientes por nombre..."
       value={searchTerm}
       onChange={(e) => {
         const value = e.target.value

@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 
 import { CustomerCard } from '@/components/customer-card'
 import { getCustomers } from '@/actions/customers-actions'
-import { SearchCustomersInput } from '@/components/SearchCustomersInput'
+import { SearchCustomersInput } from '@/components/search-customers-input'
 
 export default async function HomePage({ searchParams }: { searchParams: { search?: string } }) {
   const response = await getCustomers()
@@ -22,7 +22,10 @@ export default async function HomePage({ searchParams }: { searchParams: { searc
 
   return (
     <>
-      <SearchCustomersInput customers={filteredCustomers} />
+      <div className="mb-4">
+        <h1 className="text-3xl font-bold opacity-70">Clientes</h1>
+        {/* <SearchCustomersInput customers={filteredCustomers} /> */}
+      </div>
       <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3 xl:grid-cols-4">
         {filteredCustomers.map((customer) => (
           <CustomerCard key={customer.id} customer={customer} />

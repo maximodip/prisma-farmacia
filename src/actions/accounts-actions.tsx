@@ -164,3 +164,9 @@ export async function getAccountWithItems(accountId: number) {
     }
   }
 }
+
+export async function printAccount(accountId: number) {
+  const account = await getAccountWithItems(accountId)
+
+  return account
+}

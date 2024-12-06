@@ -71,8 +71,8 @@ export function ProductsDataTable({ products }: { products: Product[] }) {
           </Select>
         </div>
         <Input
-          className="w-[250px]"
-          placeholder="Buscar productos..."
+          className="w-full"
+          placeholder="Buscar productos por nombre..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

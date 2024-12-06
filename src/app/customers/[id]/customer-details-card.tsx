@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { deleteCustomer } from '@/actions/customers-actions'
 import { CustomerWithAccounts } from '@/lib/actions/types'
-import { DeleteCustomerButton } from '@/components/DeleteCustomerButton'
+import { DeleteCustomerButton } from '@/components/delete-customer-button'
 
 export function CustomerDetailsCard({ customer }: { customer: CustomerWithAccounts }) {
   return (

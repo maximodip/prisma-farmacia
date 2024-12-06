@@ -7,6 +7,7 @@ import { getAccountWithItems, removeAccount } from '@/actions/accounts-actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { AccountPrint } from '@/components/print-account'
 
 export default async function AccountPage({ params }: { params: { id: string } }) {
   const { data: account, error } = await getAccountWithItems(parseInt(params.id))
@@ -25,7 +26,7 @@ export default async function AccountPage({ params }: { params: { id: string } }
           <span>Cuentas de {account.customer.name}</span>
         </Link>
         <div>
-          <Printer className="h-6 w-6 text-muted-foreground hover:cursor-pointer" />
+          <AccountPrint accountId={account.id} />
         </div>
       </div>
       <CardHeader>

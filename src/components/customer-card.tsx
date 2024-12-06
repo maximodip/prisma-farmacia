@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { CustomerWithAccounts } from '@/lib/actions/types'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { formatDate } from '@/lib/helper'
 
 export function CustomerCard({ customer }: { customer: CustomerWithAccounts }) {
   return (
@@ -21,7 +22,7 @@ export function CustomerCard({ customer }: { customer: CustomerWithAccounts }) {
         </CardContent>
         <CardFooter className="flex flex-col items-start gap-2">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Creado: {new Date(customer.createdAt).toLocaleDateString('es-ES')}
+            Creado: {formatDate(customer.createdAt)}
           </p>
         </CardFooter>
       </Card>
