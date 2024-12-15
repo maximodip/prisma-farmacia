@@ -26,9 +26,11 @@ export default async function CustomerDetailsPage({ params }: { params: { id: st
 
   return (
     <div>
-      <h1>{customer.name}</h1>
-      {/* Pass serialized products to the client component */}
-      <AccountForm customerId={customer.id} products={serializedProducts} />
+      <AccountForm
+        customerId={customer.id}
+        customerName={customer.name}
+        products={serializedProducts}
+      />
     </div>
   )
 }
