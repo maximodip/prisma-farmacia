@@ -91,30 +91,38 @@ export function ProductsDataTable({ products }: { products: Product[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell className="font-extralight">{product.id}</TableCell>
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell className="font-medium">${product.price.toFixed(2)}</TableCell>
-                <TableCell>{product.distributor ?? 'No Distributor'}</TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-end gap-x-2">
-                    <Link
-                      className="rounded bg-sky-600 p-2 font-semibold text-white transition-colors hover:bg-sky-700"
-                      href={`/products/${product.id}`}
-                    >
-                      Editar
-                    </Link>
-                    <form action={deleteProduct}>
-                      <input name="productId" type="hidden" value={product.id} />
-                      <Button className="h-9 font-semibold" type="submit" variant="destructive">
-                        Eliminar
-                      </Button>
-                    </form>
-                  </div>
+            {filteredProducts.length === 0 ? (
+              <TableRow>
+                <TableCell className="text-center font-medium text-gray-500" colSpan={5}>
+                  No se encontraron productos, crea uno nuevo.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredProducts.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell className="font-extralight">{product.id}</TableCell>
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell className="font-medium">${product.price.toFixed(2)}</TableCell>
+                  <TableCell>{product.distributor ?? 'No Distributor'}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-x-2">
+                      <Link
+                        className="rounded bg-sky-600 p-2 font-semibold text-white transition-colors hover:bg-sky-700"
+                        href={`/products/${product.id}`}
+                      >
+                        Editar
+                      </Link>
+                      <form action={deleteProduct}>
+                        <input name="productId" type="hidden" value={product.id} />
+                        <Button className="h-9 font-semibold" type="submit" variant="destructive">
+                          Eliminar
+                        </Button>
+                      </form>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
